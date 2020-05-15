@@ -63,3 +63,7 @@ sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-de
 Change to source code directory using `cd linux-5.3/` and edit following files:
 
 - net/bridge/br_input.c
+- net/bridge/br_netlink.c
+- net/bridge/br_private.c
+- net/bridge/br_sysfs_br.c
+- bridge/br_sysfs_if.c
