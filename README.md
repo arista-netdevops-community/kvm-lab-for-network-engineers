@@ -60,4 +60,6 @@ tar xvzf ./linux_5.3.0.orig.tar.gz linux-5.3
 sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex libelf-dev bison
 ```
 
-Change to source code directory using `cd linux-5.3/`.
+Change to source code directory using `cd linux-5.3/` and edit following files:
+
+- net/bridge/br_input.c
