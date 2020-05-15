@@ -7,6 +7,7 @@
   - [Lab Materials](#lab-materials)
   - [Building The Lab](#building-the-lab)
     - [Step 1: Build New Kernel](#step-1-build-new-kernel)
+    - [Step 2: Boot New Kernel](#step-2-boot-new-kernel)
 
 <!-- /TOC -->
 
@@ -217,3 +218,46 @@ index 09b1dd8cd..47514e78b 100644
 ```
 
 > NOTE: You can just copy provided br_input.c if you linux kernel version is 5.3.
+
+Copy current kernel config and change if required:
+
+```bash
+cp /boot/config-$(uname -r) .config
+make menuconfig
+make
+sudo make INSTALL_MOD_STRIP=1 modules_install
+sudo make install
+```
+
+`INSTALL_MOD_STRIP=1` is critical to reduce kernel size.
+
+### Step 2: Boot New Kernel
+
+You can select the new kernel manually on boot, but a better option is to update grub:
+
+- Find kernel enry in `cat /boot/grub/grub.cfg`
+- Change `GRUB_DEFAULT` in `/etc/default/grub` to corresponding name/number.
+
+For example, `GRUB_DEFAULT` can be updated to the following string:
+
+```ini
+GRUB_DEFAULT="Advanced options for Ubuntu>Ubuntu, with Linux 5.3.0"
+```
+
+Example:
+
+```console
+petr@nuc6i3:~$ sudo nano /etc/default/grub
+petr@nuc6i3:~$ sudo update-grub
+Sourcing file `/etc/default/grub'
+Sourcing file `/etc/default/grub.d/init-select.cfg'
+Generating grub configuration file ...
+Found linux image: /boot/vmlinuz-5.3.0-45-generic
+Found initrd image: /boot/initrd.img-5.3.0-45-generic
+Found linux image: /boot/vmlinuz-5.3.0
+Found initrd image: /boot/initrd.img-5.3.0
+done
+```
+
+Reboot.
+Use `uname -r` to compare kernel version before and after reboot.
