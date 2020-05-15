@@ -38,7 +38,7 @@ To compile the kernel you have to get source files first. Best options to do tha
 
 How to get source code with Git:
 
-```console
+```bash
 # get kernel src code
 wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/linux/5.3.0-43.36/linux_5.3.0.orig.tar.gz
 wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/linux/5.3.0-43.36/linux_5.3.0-43.36.diff.gz
@@ -47,3 +47,17 @@ sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-de
 # extract archive
 tar xvzf ./linux_5.3.0.orig.tar.gz linux-5.3
 ```
+
+How to get source code with apt-get:
+
+```bash
+sudo nano /etc/apt/sources.list  # uncomment deb-src
+sudo apt-get update
+sudo -i
+apt-get source linux-image-unsigned-$(uname -r)
+tar xvzf ./linux_5.3.0.orig.tar.gz linux-5.3
+# install requirements
+sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex libelf-dev bison
+```
+
+Change to source code directory using `cd linux-5.3/`.
