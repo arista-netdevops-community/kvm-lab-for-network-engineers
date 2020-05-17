@@ -492,4 +492,28 @@ pip install -r requirements.txt
 Next, run `build-shell-scripts.py` to build shell scripts to create and destroy the lab:
 
 ```console
+(.venv) pa@MacBook-Pro kvm-lab-for-network-engineers % ./build-shell-scripts.py --help
+usage: build-shell-scripts.py [-h] [--create] [--delete] --username USERNAME
+                              --hostname HOSTNAME
+                              yaml_filename
+
+=== Build Shell Scripts for KVM Lab Setup ===
+
+positional arguments:
+  yaml_filename         YAML file containing lab definition.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --create              Create shell script for lab setup.
+  --delete              Create shell script to delete the lab.
+  --username USERNAME, -u USERNAME
+                        Username to connect to KVM host.
+  --hostname HOSTNAME, -n HOSTNAME
+                        KVM host address or name.
+(.venv) pa@MacBook-Pro kvm-lab-for-network-engineers % ./build-shell-scripts.py lab-topology.yml --create --username petr --hostname 192.168.178.178 > create-lab.sh
+(.venv) pa@MacBook-Pro kvm-lab-for-network-engineers % ./build-shell-scripts.py lab-topology.yml --delete --username petr --hostname 192.168.178.178 > delete-lab.sh
+(.venv) pa@MacBook-Pro kvm-lab-for-network-engineers % chmod +x ./create-lab.sh
+(.venv) pa@MacBook-Pro kvm-lab-for-network-engineers % chmod +x ./delete-lab.sh
 ```
+
+Now just run `create-lab.sh` or `delete-lab.sh` to create or delete you lab.
