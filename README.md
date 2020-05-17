@@ -8,6 +8,7 @@
   - [Building The Lab](#building-the-lab)
     - [Step 1: Build New Kernel](#step-1-build-new-kernel)
     - [Step 2: Boot New Kernel](#step-2-boot-new-kernel)
+    - [Prepare KVM Host](#prepare-kvm-host)
 
 <!-- /TOC -->
 
@@ -33,7 +34,7 @@ Unfortunately KVM can not be used to build a network lab by default. The main pr
 > NOTE: If you want learn more about the limitations and GROUP_FWD_MASK, read [this post](https://interestingtraffic.nl/2017/11/21/an-oddly-specific-post-about-group_fwd_mask/). It's very helpful and informative. You can also find these two mail threads interesting:
 >
 > - [remove BR_GROUPFWD_RESTRICTED for arbitrary forwarding of reserved addresses](https://lists.linuxfoundation.org/pipermail/bridge/2015-January/009456.html)
-> - [](https://lists.openwall.net/netdev/2018/10/01/128)
+> - [same, from 2018](https://lists.openwall.net/netdev/2018/10/01/128)
 
 To compile the kernel you have to get source files first. Best options to do that (Ubuntu) are apt-get and Git. Git is superior and using `git clone` instead of `apt-get` is strongly encouraged.
 
@@ -261,3 +262,122 @@ done
 
 Reboot.
 Use `uname -r` to compare kernel version before and after reboot.
+
+### Prepare KVM Host
+
+Install qemu, virt and other dependencies:
+
+```console
+petr@nuc6i3:~$ modprobe kvm
+petr@nuc6i3:~$ modprobe kvm_intel
+petr@nuc6i3:~$ lsmod | grep kvm_intel
+kvm_intel             274432  0
+kvm                   643072  1 kvm_intel
+petr@nuc6i3:~$ sudo apt install qemu-kvm
+petr@nuc6i3:~$ sudo apt install  virt-viewer
+petr@nuc6i3:~$ sudo apt install virt-manager
+petr@nuc6i3:~$ sudo apt install bridge-utils
+petr@nuc6i3:~$ sudo systemctl enable libvirtd
+petr@nuc6i3:~$ sudo systemctl start libvirtd
+petr@nuc6i3:~$ systemctl status libvirtd
+● libvirtd.service - Virtualization daemon
+   Loaded: loaded (/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Sat 2020-04-04 11:44:24 UTC; 29s ago
+     Docs: man:libvirtd(8)
+           https://libvirt.org
+ Main PID: 10257 (libvirtd)
+    Tasks: 19 (limit: 32768)
+   Memory: 21.5M
+   CGroup: /system.slice/libvirtd.service
+           ├─10257 /usr/sbin/libvirtd
+           ├─10398 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/lib/libvirt/libvirt_leaseshelper
+           └─10399 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/lib/libvirt/libvirt_leaseshelper
+
+Apr 04 11:44:24 nuc6i3 dnsmasq[10398]: compile time options: IPv6 GNU-getopt DBus i18n IDN DHCP DHCPv6 no-Lua TFTP conntrack ipset auth DNSSEC loop-detect inotify dumpfile
+Apr 04 11:44:24 nuc6i3 dnsmasq-dhcp[10398]: DHCP, IP range 192.168.122.2 -- 192.168.122.254, lease time 1h
+Apr 04 11:44:24 nuc6i3 dnsmasq-dhcp[10398]: DHCP, sockets bound exclusively to interface virbr0
+Apr 04 11:44:24 nuc6i3 dnsmasq[10398]: reading /etc/resolv.conf
+Apr 04 11:44:24 nuc6i3 dnsmasq[10398]: using nameserver 127.0.0.53#53
+Apr 04 11:44:24 nuc6i3 dnsmasq[10398]: read /etc/hosts - 7 addresses
+Apr 04 11:44:24 nuc6i3 dnsmasq[10398]: read /var/lib/libvirt/dnsmasq/default.addnhosts - 0 addresses
+Apr 04 11:44:24 nuc6i3 dnsmasq-dhcp[10398]: read /var/lib/libvirt/dnsmasq/default.hostsfile
+Apr 04 11:44:24 nuc6i3 dnsmasq[10398]: reading /etc/resolv.conf
+Apr 04 11:44:24 nuc6i3 dnsmasq[10398]: using nameserver 127.0.0.53#53
+```
+
+Validate KVM host:
+
+```console
+petr@nuc6i3:~$ sudo virt-host-validate
+  QEMU: Checking for hardware virtualization                                 : PASS
+  QEMU: Checking if device /dev/kvm exists                                   : PASS
+  QEMU: Checking if device /dev/kvm is accessible                            : PASS
+  QEMU: Checking if device /dev/vhost-net exists                             : PASS
+  QEMU: Checking if device /dev/net/tun exists                               : PASS
+  QEMU: Checking for cgroup 'cpu' controller support                         : PASS
+  QEMU: Checking for cgroup 'cpuacct' controller support                     : PASS
+  QEMU: Checking for cgroup 'cpuset' controller support                      : PASS
+  QEMU: Checking for cgroup 'memory' controller support                      : PASS
+  QEMU: Checking for cgroup 'devices' controller support                     : PASS
+  QEMU: Checking for cgroup 'blkio' controller support                       : PASS
+  QEMU: Checking for device assignment IOMMU support                         : PASS
+  QEMU: Checking if IOMMU is enabled by kernel                               : WARN (IOMMU appears to be disabled in kernel. Add intel_iommu=on to kernel cmdline arguments)
+   LXC: Checking for Linux >= 2.6.26                                         : PASS
+   LXC: Checking for namespace ipc                                           : PASS
+   LXC: Checking for namespace mnt                                           : PASS
+   LXC: Checking for namespace pid                                           : PASS
+   LXC: Checking for namespace uts                                           : PASS
+   LXC: Checking for namespace net                                           : PASS
+   LXC: Checking for namespace user                                          : PASS
+   LXC: Checking for cgroup 'cpu' controller support                         : PASS
+   LXC: Checking for cgroup 'cpuacct' controller support                     : PASS
+   LXC: Checking for cgroup 'cpuset' controller support                      : PASS
+   LXC: Checking for cgroup 'memory' controller support                      : PASS
+   LXC: Checking for cgroup 'devices' controller support                     : PASS
+   LXC: Checking for cgroup 'freezer' controller support                     : PASS
+   LXC: Checking for cgroup 'blkio' controller support                       : PASS
+   LXC: Checking if device /sys/fs/fuse/connections exists                   : PASS
+
+petr@nuc6i3:~$ virsh nodeinfo
+CPU model:           x86_64
+CPU(s):              4
+CPU frequency:       1670 MHz
+CPU socket(s):       1
+Core(s) per socket:  2
+Thread(s) per core:  2
+NUMA cell(s):        1
+Memory size:         32775928 KiB
+
+petr@nuc6i3:~$ virsh domcapabilities
+petr@nuc6i3:~$ virsh domcapabilities | grep vcpu
+  <vcpu max='255'/>
+```
+
+Confirm that [KSM](https://www.kernel.org/doc/html/latest/admin-guide/mm/ksm.html) is enabled:
+
+```console
+petr@nuc6i3:~$ cat /sys/kernel/mm/ksm/run
+1
+```
+
+It is possible to add UKSM support in Linux kernel ([similar to EVE-NG](https://github.com/dolohow/uksm/issues/25)), but UKSM support seems to be far from optimal and some VMs (including vEOS) may experience problems. A quote from a related thread that explains it all:
+
+> Too bad UKSM is not a more serious project...
+
+The original thread is [available here](https://forum.proxmox.com/threads/can-you-please-add-uksm-into-kernel.32778/).
+
+Still, if you want to experiment, start with: [https://github.com/dolohow/uksm](https://github.com/dolohow/uksm)
+Looks like the project is still alive. There are 7 contributors, one active (as of May 2020). If you decide to use UKSM, do not forget to star and contribute. If you know someone from EVE-NG team, tell them to do the same.
+
+Allow `sudo` without password. Not secure, but simple and generally fine for the lab. Run `visudo` and add following for your account and/or group:
+
+```ini
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+petr    ALL=(ALL) NOPASSWD: ALL
+
+# Allow members of group sudo to execute any command
+%sudo   ALL=(ALL:ALL) NOPASSWD: ALL
+```
+
+> **WARNING**: Do that at your own risk! Especially if security is critical for you lab. For example, it has direct connection to the Internet.
