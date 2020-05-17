@@ -573,6 +573,4 @@ sudo apt install htop
 htop
 ```
 
-Verify KSM memory optimization stats:
-
-
+Verify KSM memory optimization stats: `./ksm-check.sh`
