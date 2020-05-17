@@ -33,7 +33,7 @@ You can use any other server or Linux distribution. That may slighly change the 
 
 ### Step 1: Build New Kernel
 
-Unfortunately KVM can not be used to build a network lab by default. The main problem is that Linux kernel drops protocols like LLDP and LACP by default. Fortunately it's easy to compile a new kernel to remove this limitation. Similar to what EVE-NG maintainers have done.
+Unfortunately KVM can not be used to build a network lab with the default Linux kernel. The main problem is that Linux kernel drops protocols like LLDP and LACP. Fortunately it's easy to compile a new kernel to remove this limitation. Similar to what EVE-NG maintainers did.
 
 > NOTE: If you want learn more about the limitations and GROUP_FWD_MASK, read [this post](https://interestingtraffic.nl/2017/11/21/an-oddly-specific-post-about-group_fwd_mask/). It's very helpful and informative. You can also find these two mail threads interesting:
 >
@@ -45,13 +45,10 @@ To compile the kernel you have to get source files first. Best options to do tha
 How to get source code with Git:
 
 ```bash
-# get kernel src code
-wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/linux/5.3.0-43.36/linux_5.3.0.orig.tar.gz
-wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/linux/5.3.0-43.36/linux_5.3.0-43.36.diff.gz
-# install requirements
-sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex libelf-dev bison
-# extract archive
-tar xvzf ./linux_5.3.0.orig.tar.gz linux-5.3
+git clone git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/eoan
+cd ./eoan/
+head Makefile -n 5
+cat debian.master/changelog | head -n 10
 ```
 
 How to get source code with apt-get:
@@ -66,7 +63,7 @@ tar xvzf ./linux_5.3.0.orig.tar.gz linux-5.3
 sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex libelf-dev bison
 ```
 
-Change to source code directory using `cd linux-5.3/` and edit following files:
+Change to source code directory using `cd linux-5.3/` (or any other directory with the source code) and edit following files:
 
 - net/bridge/br_input.c
 - net/bridge/br_netlink.c
@@ -471,7 +468,7 @@ petr@nuc6i3:~$ virsh net-list
 
 ### Step 6: Deploy The Lab
 
-Deploying a lab in a manual way is slow, error-prone and boring. Fortunately libvirt has a [robust API](https://libvirt.org/) that provides full control over VMs on KVM host.
+Deploying a lab manually is slow, error-prone and boring. Fortunately libvirt has a [robust API](https://libvirt.org/) that provides full control over VMs on KVM host.
 
 To automate the lab, we are going to use the simplest option. Yet, it's powerful enough to deploy and destroy the lab quickly.
 
@@ -563,7 +560,7 @@ root@nuc6i3:~# virsh net-list
 
 Connect to a VM console: `virsh console <number>`
 
-Verify that Linux bridges allow LLDP. Configure LACP between 2 switches and verify that port-channel is up.
+Verify if Linux bridges allow LLDP using `show lldp neighbors`. Configure LACP between 2 switches and verify that port-channel is up.
 Test jumbo MTU up to 9000 bytes.
 
 Run `htop` to verify memory and CPU utilization:
