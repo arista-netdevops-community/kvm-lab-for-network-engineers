@@ -474,6 +474,8 @@ Deploying a lab in a manual way is slow, error-prone and boring. Fortunately lib
 
 To automate the lab, we are going to use the simplest option. Yet, it's powerful enough to deploy and destroy the lab quickly.
 
-1st, create a YAML file to describe the lab topology. Take a look at `lab-topology.yml` as an example. This file descripbes a simple leaf-spine network topology.
+1st, create a YAML file to describe the lab topology. Take a look at `lab-topology.yml` as an example. This file defines a simple leaf-spine network topology.
 
 > NOTE: If required, it's easy to build a GUI / visualization around that. But in my opinion, controlling your lab topology via YAML is way more powerful.
+
+
