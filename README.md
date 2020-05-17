@@ -474,8 +474,22 @@ Deploying a lab in a manual way is slow, error-prone and boring. Fortunately lib
 
 To automate the lab, we are going to use the simplest option. Yet, it's powerful enough to deploy and destroy the lab quickly.
 
-1st, create a YAML file to describe the lab topology. Take a look at `lab-topology.yml` as an example. This file defines a simple leaf-spine network topology.
+1st, clone this repository.
+
+2nd, create (or edit) a YAML file to describe the lab topology. Take a look at `lab-topology.yml` as an example. This file defines a simple leaf-spine network topology.
 
 > NOTE: If required, it's easy to build a GUI / visualization around that. But in my opinion, controlling your lab topology via YAML is way more powerful.
 
+Create Python virtual environment and install required dependencies:
 
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Next, run `build-shell-scripts.py` to build shell scripts to create and destroy the lab:
+
+```console
+```
