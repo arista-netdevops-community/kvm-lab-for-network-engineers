@@ -224,7 +224,7 @@ index 09b1dd8cd..47514e78b 100644
 
 Copy current kernel config and change if required:
 
-```bash
+```shell
 cp /boot/config-$(uname -r) .config
 make menuconfig
 make
@@ -396,7 +396,7 @@ vEOS-lab-4.22.4M.vmdk
 Create qcow2 image:
 
 ```shell
-sudo qemu-img convert -o compat=1.1 -c -p -O qcow2 ./images/vEOS-lab-4.22.4M.vmdk /var/lib/libvirt/images/vEOS-lab-4.22.4M.qcow2
+sudo qemu-img convert -o compat=1.1 -c -p -O qcow2 ./images/vEOS-lab-4.22.4M.vmdk ~/images/vEOS-lab-4.22.4M.qcow2
 ```
 
 ### Step 5: Change Default Network Settings
