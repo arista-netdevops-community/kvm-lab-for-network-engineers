@@ -11,6 +11,7 @@
     - [Step 3: Prepare KVM Host](#step-3-prepare-kvm-host)
     - [Step 4: Prepare Images For The Lab](#step-4-prepare-images-for-the-lab)
     - [Step 5: Change Default Network Settings](#step-5-change-default-network-settings)
+    - [Step 6: Deploy The Lab](#step-6-deploy-the-lab)
 
 <!-- /TOC -->
 
@@ -466,3 +467,13 @@ petr@nuc6i3:~$ virsh net-list
 --------------------------------------------
  default   active   yes         yes
 ```
+
+### Step 6: Deploy The Lab
+
+Deploying a lab in a manual way is slow, error-prone and boring. Fortunately libvirt has a [robust API](https://libvirt.org/) that provides full control over VMs on KVM host.
+
+To automate the lab, we are going to use the simplest option. Yet, it's powerful enough to deploy and destroy the lab quickly.
+
+1st, create a YAML file to describe the lab topology. Take a look at `lab-topology.yml` as an example. This file descripbes a simple leaf-spine network topology.
+
+> NOTE: If required, it's easy to build a GUI / visualization around that. But in my opinion, controlling your lab topology via YAML is way more powerful.
