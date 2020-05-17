@@ -267,6 +267,8 @@ Use `uname -r` to compare kernel version before and after reboot.
 
 ### Step 3: Prepare KVM Host
 
+Install your SSH key on KVM host with `ssh-copy-id`.
+
 Install qemu, virt and other dependencies:
 
 ```console
