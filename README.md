@@ -9,6 +9,8 @@
     - [Step 1: Build New Kernel](#step-1-build-new-kernel)
     - [Step 2: Boot New Kernel](#step-2-boot-new-kernel)
     - [Step 3: Prepare KVM Host](#step-3-prepare-kvm-host)
+    - [Step 4: Prepare Images For The Lab](#step-4-prepare-images-for-the-lab)
+    - [Step 5: Change Default Network Settings](#step-5-change-default-network-settings)
 
 <!-- /TOC -->
 
@@ -381,3 +383,84 @@ petr    ALL=(ALL) NOPASSWD: ALL
 ```
 
 > **WARNING**: Do that at your own risk! Especially if security is critical for you lab. For example, it has direct connection to the Internet.
+
+### Step 4: Prepare Images For The Lab
+
+Download and transfer the image with SFTP or alternative tool:
+
+```console
+petr@nuc6i3:~$ ls ./images/
+vEOS-lab-4.22.4M.vmdk
+```
+
+Create qcow2 image:
+
+```shell
+sudo qemu-img convert -o compat=1.1 -c -p -O qcow2 ./images/vEOS-lab-4.22.4M.vmdk /var/lib/libvirt/images/vEOS-lab-4.22.4M.qcow2
+```
+
+### Step 5: Change Default Network Settings
+
+Verify existing configuration first:
+
+```console
+petr@nuc6i3:~$ brctl show
+bridge name bridge id       STP enabled interfaces
+docker0     8000.0242e0df70c3   no
+virbr0      8000.525400ef0612   yes     virbr0-nic
+
+petr@nuc6i3:~$ virsh net-list
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   yes         yes
+
+petr@nuc6i3:~$ virsh net-dumpxml default
+<network>
+  <name>default</name>
+  <uuid>8e104c12-8a93-4972-93d1-cc99bfeca0d4</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:ef:06:12'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+    </dhcp>
+  </ip>
+</network>
+```
+
+Change mode to `route` and disable DHCP, as it will be replaced with dhcpd later:
+
+```console
+petr@nuc6i3:~$ mkdir network-profiles
+petr@nuc6i3:~$ virsh net-dumpxml default > ./network-profiles/default.xml
+petr@nuc6i3:~$ virsh net-destroy default
+Network default destroyed
+petr@nuc6i3:~$ nano ./network-profiles/default.xml
+petr@nuc6i3:~$ cat ./network-profiles/default.xml
+<network>
+  <name>default</name>
+  <uuid>8e104c12-8a93-4972-93d1-cc99bfeca0d4</uuid>
+  <forward mode='route'>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:ef:06:12'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+  </ip>
+</network>
+
+petr@nuc6i3:~$ virsh net-define ./network-profiles/default.xml
+Network default defined from ./network-profiles/default.xml
+
+petr@nuc6i3:~$ virsh net-start default
+Network default started
+
+petr@nuc6i3:~$ virsh net-list
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   yes         yes
+```
