@@ -12,6 +12,7 @@
     - [Step 4: Prepare Images For The Lab](#step-4-prepare-images-for-the-lab)
     - [Step 5: Change Default Network Settings](#step-5-change-default-network-settings)
     - [Step 6: Deploy The Lab](#step-6-deploy-the-lab)
+    - [Step 7: Lab Verification](#step-7-lab-verification)
 
 <!-- /TOC -->
 
@@ -517,3 +518,61 @@ optional arguments:
 ```
 
 Now just run `create-lab.sh` or `delete-lab.sh` to create or delete you lab.
+
+### Step 7: Lab Verification
+
+List running VMs:
+
+```console
+root@nuc6i3:~# virsh list
+ Id    Name           State
+-------------------------------
+ 40    CVP-2019.1.4   running
+ 119   SPINE2         running
+ 120   LEAF1          running
+ 121   LEAF2          running
+ 122   LEAF3          running
+ 123   LEAF4          running
+ 124   SPINE1         running
+```
+
+Network list (a network is created for each p2p link in the lab):
+
+```console
+root@nuc6i3:~# virsh net-list
+ Name          State    Autostart   Persistent
+------------------------------------------------
+ default       active   yes         yes
+ net00000200   active   yes         yes
+ net00000300   active   yes         yes
+ net00000400   active   yes         yes
+ net00000500   active   yes         yes
+ net00100200   active   yes         yes
+ net00100300   active   yes         yes
+ net00100400   active   yes         yes
+ net00100500   active   yes         yes
+ net00200300   active   yes         yes
+ net00200301   active   yes         yes
+ net00200600   active   yes         yes
+ net00300600   active   yes         yes
+ net00400500   active   yes         yes
+ net00400501   active   yes         yes
+ net00400700   active   yes         yes
+ net00500700   active   yes         yes
+```
+
+Connect to a VM console: `virsh console <number>`
+
+Verify that Linux bridges allow LLDP. Configure LACP between 2 switches and verify that port-channel is up.
+Test jumbo MTU up to 9000 bytes.
+
+Run `htop` to verify memory and CPU utilization:
+
+```bash
+sudo apt install htop
+htop
+```
+
+Verify KSM memory optimization stats:
+
+
