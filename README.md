@@ -8,7 +8,7 @@
   - [Building The Lab](#building-the-lab)
     - [Step 1: Build New Kernel](#step-1-build-new-kernel)
     - [Step 2: Boot New Kernel](#step-2-boot-new-kernel)
-    - [Prepare KVM Host](#prepare-kvm-host)
+    - [Step 3: Prepare KVM Host](#step-3-prepare-kvm-host)
 
 <!-- /TOC -->
 
@@ -263,7 +263,7 @@ done
 Reboot.
 Use `uname -r` to compare kernel version before and after reboot.
 
-### Prepare KVM Host
+### Step 3: Prepare KVM Host
 
 Install qemu, virt and other dependencies:
 
