@@ -13,6 +13,7 @@
     - [Step 5: Change Default Network Settings](#step-5-change-default-network-settings)
     - [Step 6: Deploy The Lab](#step-6-deploy-the-lab)
     - [Step 7: Lab Verification](#step-7-lab-verification)
+  - [OPENVSWITCH FOR KVM Lab](#openvswitch-for-kvm-lab)
 
 <!-- /TOC -->
 
@@ -571,3 +572,7 @@ htop
 ```
 
 Verify KSM memory optimization stats: `./ksm-check.sh`
+
+## OPENVSWITCH FOR KVM Lab
+
+tbd
