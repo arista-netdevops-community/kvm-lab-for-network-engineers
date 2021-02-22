@@ -25,7 +25,7 @@ profile:
 
 vm:
 
-- name: SPINE1
+- name: TEST1
   profile: veos_lab
   graphics:
     type: vnc
@@ -33,12 +33,10 @@ vm:
   base_mac: 00:0c:29:78:01:00  # will be incremented by 1 for every connection
   connections:
     - network: {name: default}  # ma1
-    - LEAF1  # e1
-    - LEAF2  # e2
-    - LEAF3  # e3
-    - LEAF4  # e4
+    - TEST2  # e1
+    - TEST3  # e2
 
-- name: SPINE2
+- name: TEST2
   profile: veos_lab
   graphics:
     type: vnc
@@ -46,85 +44,16 @@ vm:
   base_mac: 00:0c:29:78:02:00  # will be incremented by 1 for every connection
   connections:
     - network: {name: default}  # ma1
-    - LEAF1  # e1
-    - LEAF2  # e2
-    - LEAF3  # e3
-    - LEAF4  # e4
+    - TEST1  # e1
+    - TEST3  # e2
 
-- name: LEAF1
+- name: TEST3
   profile: veos_lab
   graphics:
     type: vnc
-    port: 5911
+    port: 5903
   base_mac: 00:0c:29:78:11:00  # will be incremented by 1 for every connection
   connections:
     - network: {name: default}  # ma1
-    - SPINE1
-    - SPINE2
-    - LEAF2
-    - LEAF2
-    - HOST1
-
-- name: LEAF2
-  profile: veos_lab
-  graphics:
-    type: vnc
-    port: 5912
-  base_mac: 00:0c:29:78:12:00  # will be incremented by 1 for every connection
-  connections:
-    - network: {name: default}  # ma1
-    - SPINE1
-    - SPINE2
-    - LEAF1
-    - LEAF1
-    - HOST1
-
-- name: LEAF3
-  profile: veos_lab
-  graphics:
-    type: vnc
-    port: 5913
-  base_mac: 00:0c:29:78:13:00  # will be incremented by 1 for every connection
-  connections:
-    - network: {name: default}  # ma1
-    - SPINE1
-    - SPINE2
-    - LEAF4
-    - LEAF4
-    - HOST2
-
-- name: LEAF4
-  profile: veos_lab
-  graphics:
-    type: vnc
-    port: 5914
-  base_mac: 00:0c:29:78:14:00  # will be incremented by 1 for every connection
-  connections:
-    - network: {name: default}  # ma1
-    - SPINE1
-    - SPINE2
-    - LEAF3
-    - LEAF3
-    - HOST2
-
-- name: HOST1
-  profile: veos_lab
-  graphics:
-    type: vnc
-    port: 5921
-  base_mac: 00:0c:29:78:21:00  # will be incremented by 1 for every connection
-  connections:
-    - network: {name: default}  # ma1
-    - LEAF1
-    - LEAF2
-
-- name: HOST2
-  profile: veos_lab
-  graphics:
-    type: vnc
-    port: 5922
-  base_mac: 00:0c:29:78:22:00  # will be incremented by 1 for every connection
-  connections:
-    - network: {name: default}  # ma1
-    - LEAF3
-    - LEAF4
+    - TEST1
+    - TEST2
