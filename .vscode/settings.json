@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/Users/pa/Documents/VSCode/github-projects/ankudinov-labs-and-demos/kvm-lab-for-network-engineers/.venv/bin/python3"
+    "python.pythonPath": ".venv/bin/python3",
+    "python.terminal.activateEnvironment": true,
 }
