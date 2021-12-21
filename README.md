@@ -14,6 +14,13 @@
     - [Step 6: Deploy The Lab](#step-6-deploy-the-lab)
     - [Step 7: Lab Verification](#step-7-lab-verification)
   - [OPENVSWITCH FOR KVM Lab](#openvswitch-for-kvm-lab)
+    - [KVM OPENVSWITCH VEOSLAB](#kvm-openvswitch-veoslab)
+    - [Attaching VM interfaces to OVS](#attaching-vm-interfaces-to-ovs)
+    - [Attaching Docker container interfaces to OVS](#attaching-docker-container-interfaces-to-ovs)
+    - [Adding OVS openflow rules](#adding-ovs-openflow-rules)
+    - [A word on mac addresses](#a-word-on-mac-addresses)
+    - [Veoslab System Mac Address](#veoslab-system-mac-address)
+    - [Mlag](#mlag)
 
 <!-- /TOC -->
 
@@ -465,6 +472,42 @@ petr@nuc6i3:~$ virsh net-list
  Name      State    Autostart   Persistent
 --------------------------------------------
  default   active   yes         yes
+```
+
+> **WARNING**: Access to your VMs from outside may be blocked by iptables as by default only outgoing connections are allowed. Change the rules accordingly if required.
+
+List iptables rules:
+
+```console
+petr@nuc10i7:~$ sudo iptables -L LIBVIRT_FWI --line-numbers
+Chain LIBVIRT_FWI (1 references)
+num  target     prot opt source               destination
+1    ACCEPT     all  --  anywhere             192.168.122.0/24     ctstate RELATED,ESTABLISHED
+2    REJECT     all  --  anywhere             anywhere             reject-with icmp-port-unreachable
+```
+
+Delete existing rules:
+
+```console
+petr@nuc10i7:~$ sudo iptables -D LIBVIRT_FWI 2
+petr@nuc10i7:~$ sudo iptables -D LIBVIRT_FWI 1
+petr@nuc10i7:~$ sudo iptables -L LIBVIRT_FWI --line-numbers
+Chain LIBVIRT_FWI (1 references)
+num  target     prot opt source               destination
+```
+
+Add new rules:
+
+```bash
+petr@nuc10i7:~$ sudo iptables -A LIBVIRT_FWI -d 192.168.122.0/24 -j ACCEPT
+petr@nuc10i7:~$ sudo iptables -A LIBVIRT_FWI -o virbr0 -j REJECT --reject-with icmp-port-unreachable
+```
+
+Save rules:
+
+```bash
+sudo apt-get install iptables-persistent
+cat /etc/iptables/rules.v4
 ```
 
 ### Step 6: Deploy The Lab
